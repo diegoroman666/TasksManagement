@@ -1,0 +1,257 @@
+python --version
+
+node --version        // se crea un cliente de REACT y usa por debajo NODEJS
+                      // el proyecto backend usa lenguaje PYTHON , CREAR ENOTNO VIRTAL VENV
+                      // el VENV es un espacio donde instalamos paquetes que se instalan globalmente
+                      // en frontend se utiliza el package.json y npm 
+
+pip install virtualenv  // a traves de nuestra version de pyton se crea el programa 
+                        // es un paquete de python para crear entornos viruales
+dir .venv               // verifico si está el entorno virtual creado
+
+python -m venv venv     // CREA EL ENTORNO VIRTUAL
+                        // modulo o comando que nos pide un parametro (nombre de la carpeta)
+                        // el nombre de la carpeta en donde se guardaran los paquetes de python 
+                        // para activarlo entro a la carpeta Scripts/activate.bat
+                        // ó selecciono F1 y escribir -->   Python : Select Interpreter
+                        // se muestran versiones distintas de python entre ellas la de VENV 
+                        // ahora VS code lee entorno virtual de python que esta dentro de VENV 
+
+
+.\venv\Scripts\Activate.ps1         //  Activa el entorno virtual correctamente 
+
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser  // si lanza error cambia la política de ejecución 
+                                                     // ejecutar como ADMINISTRADOR 
+
+pip install django                                   // instala django en mi proyecto (carpeta VENV)
+
+django-admin startproject django_crud_api .          // solo el backend va a ser una API 
+                                                     // envía datos y no plantillas (html,css,etc) al FRONTEND
+                                                     // se crea la carpeta a la misma altura que la carpeta VENV
+
+pip install django-cors-headers                      // paquete django-cors-headers instalar en el VENV
+
+pip freeze > requirements.txt                        // crea archivo dentro del entorno virtual 
+
+pip install -r requirements.txt                      // se reinstala facilemente el entorno virtual 
+
+pip install djangorestframework                      // descargar modulo de DjangoRestFramework
+
+python manage.py runserver                           // SE ejecuta EN DESARROLLO Y da un SERVIDOR EN DESARROLLO
+                                                     // puerto 8000  ! 
+
+python manage.py startaap tasks                      // INICIAMOS y creamos una APLICACION TASKS !!!
+
+INSTALLED_APPS = [   ...
+                    'rest_framework',
+                    'tasks'
+]
+  
+
+
+//  AHORA VEMOS el modulo con propia documentacion de DjangoRestFramework basado en Django que tiene una propia
+//  y me permite crear API´s , es decir comunicar BACKEND - FRONTEND
+
+pip install djangorestframework                      // descargar modulo de DjangoRestFramework 
+
+
+
+// al crear proyecto FRONTEND se ejecuta y se obtiene un servidor de desarrollo que funciona en el puerto 5173 
+
+// los navegadores no permiten comunicar 2 servidores distintos por seguridad 
+// y tenemos que autorizar a un servidor que se conecte a nuestro servidor de BACKEND
+
+
+pip install django-cors-headers  // modulo que añade header (string) que autoriza quien se conecta al BACKEND 
+
+INSTALLED_APPS = [
+  ...
+    'django.contrib.staticfiles',
+    'corsheaders',
+    'rest_framework',
+    ..
+]
+
+MIDDLEWARE = [
+   ...
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    'django.middleware.common.CommonMiddleware',
+    ...
+    
+]
+
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+
+ python manage.py runserver   http://127.0.0.1:8000/    // ejecutamos y listo el backend y djangoApiRestFramework
+
+------------------------------------------------------------------------------------------
+
+// ahora configuramos la tabla que va a tener los datos guardar
+// en esta etapa se crea el MODELO DE TAREAS una tabla que guarda las TAREAS   TASKS   !! 
+// TRABAJAMOS CON LA CARPETAC TASKS QUE ES LA APPPROJECT
+
+entrar a tasks --> models.py crear los models 
+
+// CREO la CLASE LLAMADA COMO LA TABLA, TASK, QUE NOS PIDE HEREDAR desde el directorio models LA CLASE MODEL 
+// para poder crear una tabla es decir qie se pueda guardar datos en ella
+
+class Task (models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    done = models.BooleanField(default=False)
+
+// luego usamos el comando 
+
+py manage.py makemigrations // crea un archivo de migraciones que se va a aplicar a la base de datos
+// luego ejecutamos el comando para aplicar las migraciones a la base de datos
+py manage.py migrate // crea la tabla en la base de datos
+// ahora podemos crear un serializer para poder enviar los datos a la API
+
+ARCHIVO MODELS.PY !!!
+
+from django.db import models
+
+
+class Task (models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    done = models.BooleanField(default=False)
+
+    def __str__(self):       # para poder ver el nombre de la tarea en la consola
+                             # self es un metodo que me permite entrar a la misma
+                            #  instancia del objeto que se crea a partir de esta clase  
+    return self.title        # desde self quiero ver el titulo de cada tarea 
+
+queryset
+ vamos a pedirle a nuestro modelo de tareas que datos van a ser seleccionados para que se 
+ puedan enviar desde el BACKEND y puedan ser convertidos en un json ya que cuando se 
+ guardan archivos en python o en este caso en Django estos son SERIALIZADOS EN OBJETOS
+ y luego son convertidos en lo que se conoce como un queryset que es un modelo o un tipo de 
+ dato complejo basado en lo que crea django , entonces convertir tipos de datos de django a python a json 
+ aparece djangoApiRestFramework y lo hace pero nos dice que campo debemos enviar para poder SERIALIZAR
+ ES DECIR QUE CAMPOS QUEREMOS CONVERTIR EN JSON !  
+   
+
+SERIALIZER.PY !!!!
+// creamos un archivo llamado serializers.py dentro de la carpeta tasks
+// desde rest_framework importamos el paquete serializer 
+// que es el que nos permite seleccionar y convertir los datos en json
+// dentro de serializers.py creamos una clase llamada TaskSerializer que hereda de serializers.ModelSerializer
+// y creamos un metodo llamado create que nos permite crear un nuevo objeto de la clase Task
+
+from rest_framework import serializers
+from .models import Task                          # importamos el modelo de tareas Task que creamos en models.py
+class TaskSerializer(serializers.ModelSerializer):       // creamos una clase llamada TaskSerializer que hereda de serializers.ModelSerializer
+class Meta:                                              # es un metodo que nos permite especificar los campos que vamos a serializar
+model = Task                                             # el modelo que vamos a serializar
+//fields = [ 'id', 'title', 'description', 'done']    # fields es una tupla que nos permite seleccionar los campos que queremos convertir en json
+fields = ['__all__']                                  # __all__ es un metodo que selecciona todos los campos de la clase Task
+
+TENEMOS EL SERIALIZADOR QUE ES LA FUNCION QUE CONVERTIRA LOS TIPOS DE DATOS DE PYTHON A JSON 
+
+
+VIEWS funciones que responden operaciones CRUD al cliente  !!
+// ahora podemos crear un archivo llamado views.py dentro de la carpeta tasks
+// desde rest_framework importamos el paquete viewsets que nos permite crear vistas
+// dentro de views.py creamos una clase llamada TaskView que hereda de viewsets.ModelViewSet
+// es decir desde viewsets voy a estar creando un ModelViewSet que es una clase que nos permite crear vistas
+
+from rest_framework import viewsets  
+from .models import Task
+from .serializer import TaskSerializer
+
+class TaskViews(viewsets.ModelViewSet):
+    serializer_class = TaskSerializer   // ejecutamos el TaskSerializer y lo guardamos en la clase serializer_class 
+    queryset = Task.objects.all()       // pedimos que traiga la clase creada en models.py y que la convierta en un queryset 
+
+
+serializer = TaskSerializer(tasks, many=True)  # creamos un objeto de la clase TaskSerializer
+# y le pasamos todos los objetos de la clase Task y le decimos que sean muchos
+# porque estamos obteniendo todos los objetos de la clase Task
+return Response(serializer.data)  # devolvemos la respuesta en formato json
+# y le pasamos el objeto serializer.data que contiene todos los datos de la clase Task en formato
+json
+
+URLS !!
+
+# ahora podemos crear un archivo llamado urls.py dentro de la carpeta tasks
+
+from django.urls import path, include
+# from rest_framework.documentation import include_docs_urls
+from rest_framework import routers   #este router va a tomar todas esa vistas y va a generar todas las urls 
+from tasks import views
+
+router = routers.DefaultRouter()     #creo un router que viene desde defaultouter
+router.register(r'tasks', views.TaskViews, 'tasks')
+
+#versionado de api
+urlpatterns = [                                            
+    path("api/v1/", include(router.urls)) ,
+    # path('docs/' , include_docs_urls(title="Tasks API"))
+]
+
+ # el router nos permite generar todas las urls de la vista TaskViews
+ # y las va a generar de la siguiente manera
+ # /api/v1/tasks/
+ # /api/v1/tasks/1/
+
+  
+pip install coreapi                  //modulo adicional    (obsoleto)
+pip install drf-yasg                //modulo adicional    (actualizado)
+
+
+EL FRONTEND AHORA !!!
+USAMOS LA HERRAMIENTA VITE PARA CREAR PROYECTOS FRONTEND 
+ESTOY EN LA RAIZ DEL PROYECTO DESKTOP/DJANGO-CRUD-
+PARA PODER EJECUTAR UN PROYECTO FRONTEND NECESITAMOS TENER INSTALADO NODEJS 
+
+node --version      
+npm create vite    // recordar que estoy en la raiz root del proyecto
+
+client
+REACT
+JavaScrpt
+cd client
+npm install 
+npm run dev
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+                           
+
+
+
+
+
+
+
+
+
+
+ 
