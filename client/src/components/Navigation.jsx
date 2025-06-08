@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Link } from "react-router-dom";
 
 export function Navigation() {
@@ -18,3 +19,19 @@ export function Navigation() {
 }
 
 export default Navigation;
+=======
+import { Link } from "react-router-dom"
+
+export function Navigation() {
+  return (
+    <div>
+        <Link to="/tasks">
+        <h1>Task APP </h1>
+        </Link>
+        <Link to="/tasks-create">create task</Link>
+    </div>
+  )
+}
+
+export default Navigation
+>>>>>>> 0325d6e351d0f8afd8141d3e15c954cbd6afbdcf

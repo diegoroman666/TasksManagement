@@ -9,9 +9,14 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+<<<<<<< HEAD
 import os
 from pathlib import Path
 
+=======
+
+from pathlib import Path
+>>>>>>> 0325d6e351d0f8afd8141d3e15c954cbd6afbdcf
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,8 +44,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+<<<<<<< HEAD
     'rest_framework',
     'drf_spectacular',
+=======
+    'rest_framework', 
+    'coreapi',
+>>>>>>> 0325d6e351d0f8afd8141d3e15c954cbd6afbdcf
     'tasks'
 ]
 
@@ -128,6 +138,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #cors authorizacion
+<<<<<<< HEAD
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
@@ -142,3 +153,10 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
 }
 
+=======
+CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+}
+>>>>>>> 0325d6e351d0f8afd8141d3e15c954cbd6afbdcf

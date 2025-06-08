@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 """
 URL configuration for django_crud_ project.
 
@@ -14,6 +15,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+=======
+
+>>>>>>> 0325d6e351d0f8afd8141d3e15c954cbd6afbdcf
 from django.contrib import admin
 from django.urls import path, include
 
